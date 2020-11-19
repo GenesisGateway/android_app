@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidGenesisSample-Java.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidGenesisSample-Java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidGenesisSample/AndroidGenesisSample-Java.AndroidGenesisSample.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidGenesisSample/AndroidGenesisSample-Java.AndroidGenesisSample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GenesisAndroid/AndroidGenesisSample-Java.GenesisAndroid.iml" filepath="$PROJECT_DIR$/.idea/modules/GenesisAndroid/AndroidGenesisSample-Java.GenesisAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GenesisAndroid/GenesisAndroid/AndroidGenesisSample-Java.GenesisAndroid.sdk.iml" filepath="$PROJECT_DIR$/.idea/modules/GenesisAndroid/GenesisAndroid/AndroidGenesisSample-Java.GenesisAndroid.sdk.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.emerchantpay.gateway:genesis-android:1.2.6@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb815f9f485dc61a7d901a4b6a268d8e/genesis-android-1.2.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb815f9f485dc61a7d901a4b6a268d8e/genesis-android-1.2.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb815f9f485dc61a7d901a4b6a268d8e/genesis-android-1.2.6/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.emerchantpay.gateway/genesis-android/1.2.6/4859692810f5ed6a5d942b5567e369db00395cef/genesis-android-1.2.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.emerchantpay.gateway/genesis-android/1.2.6/48b97c97cc5b159520c701600d4b87772ffc6001/genesis-android-1.2.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

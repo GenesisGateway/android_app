@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Genesis In App Payments</string>
+    <string name="title_activity_genesis_web_view">Genesis WebView</string>
+
+    <!-- MainActivity label resources -->
+    <string name="demo_label">Genesis Inn-app payments Demo</string>
+    <string name="select_transaction_label">Please select transaction type:</string>
+
+    <!--TransactionDetailsActivity label resources -->
+    <string name="transactionid_label">Transaction Id</string>
+    <string name="amount_label">Amount</string>
+    <string name="currency_label">Currency</string>
+    <string name="usage_label">Usage</string>
+    <string name="customeremail_label">Customer Email</string>
+    <string name="customerphone_label">Customer Phone</string>
+    <string name="firstname_label">Firstname</string>
+    <string name="lastname_label">Lastname</string>
+    <string name="address1_label">Address 1</string>
+    <string name="address2_label">Address 2</string>
+    <string name="zipcode_label">Zip Code</string>
+    <string name="city_label">City</string>
+    <string name="state_label">State</string>
+    <string name="country_label">Country</string>
+    <string name="notificationurl_label">Notification Url</string>
+    <string name="pay_label">Pay</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_transaction_details">TransactionDetailsActivity</string>
+
+    <!-- Urls -->
+    <string name="privacy_policy_url">https://www.genesissupport247.com/privacy-policy/</string>
+    <string name="terms_and_conditions_url">https://www.genesissupport247.com/terms-conditions</string>
+
+    <!-- Hyperlinks -->
+    <string name="privacy_policy_hyperlink"><a href="https://www.genesissupport247.com/privacy-policy/">Privacy Policy</a></string>
+    <string name="terms_and_conditions_hyperlink"><a href="https://www.genesissupport247.com/terms-conditions">Terms &amp; Conditions</a></string>
+    <string name="messageWithLink">This is a message with a link inside!\n<a href="https://www.google.com/">Tap here to open it!</a></string>
+
+    <!-- WPF Transaction types -->
+    <string-array name="transaction_types">
+        <item>Authorize</item>
+        <item>Authorize 3D</item>
+        <item>Sale</item>
+        <item>Sale 3D</item>
+        <item>Paysafecard</item>
+        <item>PPro</item>
+    </string-array>
+</resources>

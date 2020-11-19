@@ -1,0 +1,2 @@
+include ':AndroidGenesisSample', ':GenesisAndroid', ':GenesisAndroid:sdk'
+project(':GenesisAndroid:sdk').projectDir = new File('GenesisAndroid/GenesisAndroid')
