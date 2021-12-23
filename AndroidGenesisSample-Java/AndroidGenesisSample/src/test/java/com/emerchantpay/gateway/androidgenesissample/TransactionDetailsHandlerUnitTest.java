@@ -1,7 +1,6 @@
 package com.emerchantpay.gateway.androidgenesissample;
 
 import android.content.Context;
-import android.test.mock.MockContext;
 
 import com.emerchantpay.gateway.androidgenesissample.activities.TransactionDetailsActivity;
 import com.emerchantpay.gateway.androidgenesissample.handlers.TransactionDetailsHandler;
@@ -11,6 +10,8 @@ import com.emerchantpay.gateway.genesisandroid.api.internal.request.TransactionT
 import com.emerchantpay.gateway.genesisandroid.api.models.Country;
 import com.emerchantpay.gateway.genesisandroid.api.models.Currency;
 import com.emerchantpay.gateway.genesisandroid.api.models.PaymentAddress;
+
+import io.mockk.mockk;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class TransactionDetailsHandlerUnitTest {
 
     @Before
     public void setup() throws IllegalAccessException {
-        context = new MockContext();
+        context = mockk<Context>(relaxed = true);
         transactionDetailsActivity = mock(TransactionDetailsActivity.class);
         transactionDetails = mock(TransactionDetailsHandler.class);
 

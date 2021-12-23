@@ -10,6 +10,8 @@ import com.emerchantpay.gateway.genesisandroid.api.models.Country
 import com.emerchantpay.gateway.genesisandroid.api.models.Currency
 import com.emerchantpay.gateway.genesisandroid.api.models.PaymentAddress
 
+import io.mockk.mockk
+
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.assertThat
@@ -34,7 +36,7 @@ class TransactionDetailsHandlerUnitTest {
     @Before
     @Throws(IllegalAccessException::class)
     fun setup() {
-        context = mock(Context::class.java)
+        context = mockk<Context>(relaxed = true)
         transactionDetailsActivity = mock<TransactionDetailsActivity>(TransactionDetailsActivity::class.java)
         transactionDetails = mock<TransactionDetailsHandler>(TransactionDetailsHandler::class.java)
 

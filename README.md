@@ -16,7 +16,6 @@
 1. Clone repository
 ```
 git clone https://github.com/GenesisGateway/android_app && cd android_app/AndroidGenesisSample-Kotlin
-git clone https://github.com/GenesisGateway/android_sdk GenesisAndroid
 ```
 2. Gradle build
 ```
