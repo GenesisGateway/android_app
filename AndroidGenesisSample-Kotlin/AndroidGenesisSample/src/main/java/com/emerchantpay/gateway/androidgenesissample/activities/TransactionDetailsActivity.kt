@@ -14,13 +14,19 @@ import com.emerchantpay.gateway.genesisandroid.api.constants.Environments
 import com.emerchantpay.gateway.genesisandroid.api.constants.ErrorMessages
 import com.emerchantpay.gateway.genesisandroid.api.constants.IntentExtras.EXTRA_RESULT
 import com.emerchantpay.gateway.genesisandroid.api.constants.Locales
+import com.emerchantpay.gateway.genesisandroid.api.interfaces.financial.threedsv2.definitions.*
 import com.emerchantpay.gateway.genesisandroid.api.internal.Genesis
 import com.emerchantpay.gateway.genesisandroid.api.internal.request.PaymentRequest
 import com.emerchantpay.gateway.genesisandroid.api.internal.request.TransactionTypesRequest
 import com.emerchantpay.gateway.genesisandroid.api.models.*
 import com.emerchantpay.gateway.genesisandroid.api.models.Currency
+import com.emerchantpay.gateway.genesisandroid.api.models.threedsv2.ThreeDsV2CardHolderAccountParams
+import com.emerchantpay.gateway.genesisandroid.api.models.threedsv2.ThreeDsV2MerchantRiskParams
+import com.emerchantpay.gateway.genesisandroid.api.models.threedsv2.ThreeDsV2Params
+import com.emerchantpay.gateway.genesisandroid.api.models.threedsv2.ThreeDsV2RecurringParams
 import com.emerchantpay.gateway.genesisandroid.api.util.Configuration
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TransactionDetailsActivity : Activity() {
@@ -32,7 +38,7 @@ class TransactionDetailsActivity : Activity() {
     private var error: GenesisError? = null
 
     // Transaction details
-    internal var transactionDetails = TransactionDetailsHandler()
+    private var transactionDetails = TransactionDetailsHandler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +71,12 @@ class TransactionDetailsActivity : Activity() {
         } catch (e: IllegalAccessException) {
             Log.e("Illegal Exception", e.toString())
         }
+    }
 
+    override fun onPostResume() {
+        super.onPostResume()
+
+        transactionDetails.generateNewTransactionId()
     }
 
     @Throws(IllegalAccessException::class)
@@ -91,15 +102,6 @@ class TransactionDetailsActivity : Activity() {
         val transactionTypes = TransactionTypesRequest()
         transactionDetails.transactionType?.let { transactionTypes.addTransaction(it) }
 
-        // Risk params
-        val riskParams = RiskParams("1002547", "1DA53551-5C60-498C-9C18-8456BDBA74A9",
-                "987-65-4320", "12-34-56-78-9A-BC", "123456",
-                "emil@example.com", "+49301234567", "245.253.2.12",
-                "10000000000", "1234", "100000000", "John",
-                "Doe", "US", "test", "245.25 3.2.12",
-                "test", "test123456", "Bin name",
-                "+49301234567")
-
         // Dynamic descriptor params
         val dynamicDescriptorParams = DynamicDescriptorParams("eMerchantPay Ltd",
                 "Sofia")
@@ -115,11 +117,56 @@ class TransactionDetailsActivity : Activity() {
             }
         }
 
-        // Additionaly params
-        transactionDetails?.usage?.let { paymentRequest?.setUsage(it) }
+        // Additional params
+        transactionDetails.usage?.let { paymentRequest?.setUsage(it) }
         paymentRequest?.setLifetime(60)
 
+        // Risk params
+        val riskParams = RiskParams("1002547", "1DA53551-5C60-498C-9C18-8456BDBA74A9",
+            "987-65-4320", "12-34-56-78-9A-BC", "123456",
+            "emil@example.com", "+49301234567", "245.253.2.12",
+            "10000000000", "1234", "100000000", "John",
+            "Doe", "US", "test", "245.25 3.2.12",
+            "test", "test123456", "Bin name",
+            "+49301234567")
+
         paymentRequest?.setRiskParams(riskParams)
+
+        val threeDsV2Params = ThreeDsV2Params.build {
+            purchaseCategory = ThreeDsV2PurchaseCategory.GOODS
+
+            val merchantRiskPreorderDate = SimpleDateFormat("dd-MM-yyyy").calendar.apply {
+                time = Date()
+                add(Calendar.DATE, 5)
+            }.time
+
+            merchantRisk = ThreeDsV2MerchantRiskParams(
+                ThreeDsV2MerchantRiskShippingIndicator.DIGITAL_GOODS,
+                ThreeDsV2MerchantRiskDeliveryTimeframe.SAME_DAY,
+                ThreeDsV2MerchantRiskReorderItemsIndicator.REORDERED,
+                ThreeDsV2MerchantRiskPreorderPurchaseIndicator.MERCHANDISE_AVAILABLE,
+                merchantRiskPreorderDate,
+                true, 3
+            )
+
+            cardHolderAccount = ThreeDsV2CardHolderAccountParams(
+                SimpleDateFormat("dd-MM-yyyy").parse("11-02-2021"),
+                ThreeDsV2CardHolderAccountUpdateIndicator.UPDATE_30_TO_60_DAYS,
+                SimpleDateFormat("dd-MM-yyyy").parse("13-02-2021"),
+                ThreeDsV2CardHolderAccountPasswordChangeIndicator.PASSWORD_CHANGE_NO_CHANGE,
+                SimpleDateFormat("dd-MM-yyyy").parse("10-01-2021"),
+                ThreeDsV2CardHolderAccountShippingAddressUsageIndicator.ADDRESS_USAGE_MORE_THAN_60DAYS,
+                SimpleDateFormat("dd-MM-yyyy").parse("10-01-2021"),
+                2, 129, 1, 31,
+                ThreeDsV2CardHolderAccountSuspiciousActivityIndicator.NO_SUSPICIOUS_OBSERVED,
+                ThreeDsV2CardHolderAccountRegistrationIndicator.REGISTRATION_30_TO_60_DAYS,
+                SimpleDateFormat("dd-MM-yyyy").parse("03-01-2021")
+            )
+
+            recurring = ThreeDsV2RecurringParams()
+        }
+
+        paymentRequest?.setThreeDsV2Params(threeDsV2Params)
 
         val genesis = paymentRequest?.let { Genesis(this, configuration, it) }
 
@@ -144,7 +191,7 @@ class TransactionDetailsActivity : Activity() {
 
                         dialogHandler = AlertDialogHandler(this, "Failure",
                                 "Code: " + error!!.code + "\nMessage: "
-                                        + error!!.message)
+                                        + error!!.technicalMessage)
                         dialogHandler!!.show()
                     }
                 }

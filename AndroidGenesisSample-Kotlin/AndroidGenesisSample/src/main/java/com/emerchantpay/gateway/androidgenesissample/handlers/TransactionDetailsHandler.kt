@@ -140,6 +140,11 @@ class TransactionDetailsHandler {
         notificationUrl = notificationUrlEditText!!.text.toString()
     }
 
+    fun generateNewTransactionId() {
+        transactionId = UUID.randomUUID().toString()
+        transactionIdEditText!!.setText(transactionId)
+    }
+
     @Throws(IllegalAccessException::class)
     fun addSpinners(context: Context, adapterMap: HashMap<String, ArrayAdapter<String>>) {
         for (key in adapterMap.keys) {

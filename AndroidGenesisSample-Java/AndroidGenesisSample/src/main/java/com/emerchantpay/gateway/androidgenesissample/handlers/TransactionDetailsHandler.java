@@ -123,6 +123,11 @@ public class TransactionDetailsHandler {
         notificationUrl = notificationUrlEditText.getText().toString();
     }
 
+    public void generateNewTransactionId() {
+        transactionId = UUID.randomUUID().toString();
+        transactionIdEditText.setText(transactionId);
+    }
+
     public void addSpinners(Context context, HashMap<String, ArrayAdapter<String>> adapterMap) throws IllegalAccessException {
         for (String key : adapterMap.keySet()) {
             switch (key) {

@@ -74,5 +74,7 @@ class TransactionTypes {
         var sale = TransactionTypes("Sale", "sale")
         var sale3d = TransactionTypes("Sale 3D", "sale3d")
         var paysafecard = TransactionTypes("Paysafecard", "paysafecard")
+        val initRecurringSale = TransactionTypes("Init recurring sale", "init_recurring_sale")
+        val initRecurringSale3d = TransactionTypes("Init recurring sale 3D", "init_recurring_sale3d")
     }
 }

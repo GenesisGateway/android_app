@@ -52,7 +52,7 @@ public class MainActivity extends Activity implements View.OnClickListener  {
             listAdapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_list_item_1, transactionTypes.getListNames());
         } catch (IllegalAccessException e) {
-            Log.e("Illigal Exception", e.toString());
+            Log.e("Illegal Exception", e.toString());
         }
 
         transactionTypesListView.setAdapter(listAdapter);
@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements View.OnClickListener  {
                     intentTransactionDetails.putExtra(IntentExtras.EXTRA_TRANSACTION_TYPE, itemValue);
                     startActivity(intentTransactionDetails);
                 } catch (IllegalAccessException e) {
-                    Log.e("Illigal Exception", e.toString());
+                    Log.e("Illegal Exception", e.toString());
                 }
             }
         });
@@ -78,18 +78,23 @@ public class MainActivity extends Activity implements View.OnClickListener  {
 
     @Override
     public void onClick(View v) {
-        Intent browserIntent = null;
+        Intent browserIntent;
+
         switch (v.getId()) {
             case R.id.privacyPolicyLabel:
                 browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources()
                         .getString(R.string.privacy_policy_url)));
-                startActivity(browserIntent);
+
                 break;
             case R.id.termsandconditionsLabel:
                 browserIntent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse(getResources()
                                 .getString(R.string.terms_and_conditions_url)));
-                startActivity(browserIntent);
+                break;
+
+            default: return;
         }
+
+        startActivity(browserIntent);
     }
 }

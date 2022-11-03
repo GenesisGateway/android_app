@@ -28,6 +28,8 @@ public class TransactionTypes {
     public static TransactionTypes sale = new TransactionTypes("Sale", "sale");
     public static TransactionTypes sale3d = new TransactionTypes("Sale 3D", "sale3d");
     public static TransactionTypes paysafecard = new TransactionTypes("Paysafecard", "paysafecard");
+    public static TransactionTypes initRecurringSale = new TransactionTypes("Init recurring sale", "init_recurring_sale");
+    public static TransactionTypes initRecurringSale3d = new TransactionTypes("Init recurring sale 3D", "init_recurring_sale3d");
 
     public String getDisplayName() {
         return displayName;
@@ -52,7 +54,7 @@ public class TransactionTypes {
         getTransactionTypes();
 
         ArrayList<String> arrayList = new ArrayList<String>();
-        arrayList.addAll(transactionTypesMap.keySet());
+        arrayList.addAll(transactionTypesMap.values());
 
         return sortArrayList(arrayList);
     }
