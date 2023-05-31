@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import com.emerchantpay.gateway.androidgenesissample.R
+import com.emerchantpay.gateway.androidgenesissample.constants.Extras
 import com.emerchantpay.gateway.androidgenesissample.handlers.AlertDialogHandler
 import com.emerchantpay.gateway.androidgenesissample.handlers.TransactionDetailsHandler
 import com.emerchantpay.gateway.genesisandroid.api.constants.Endpoints
@@ -14,6 +14,7 @@ import com.emerchantpay.gateway.genesisandroid.api.constants.Environments
 import com.emerchantpay.gateway.genesisandroid.api.constants.ErrorMessages
 import com.emerchantpay.gateway.genesisandroid.api.constants.IntentExtras.EXTRA_RESULT
 import com.emerchantpay.gateway.genesisandroid.api.constants.Locales
+import com.emerchantpay.gateway.genesisandroid.api.constants.WPFTransactionTypes
 import com.emerchantpay.gateway.genesisandroid.api.interfaces.financial.threedsv2.definitions.*
 import com.emerchantpay.gateway.genesisandroid.api.internal.Genesis
 import com.emerchantpay.gateway.genesisandroid.api.internal.request.PaymentRequest
@@ -25,12 +26,12 @@ import com.emerchantpay.gateway.genesisandroid.api.models.threedsv2.ThreeDsV2Mer
 import com.emerchantpay.gateway.genesisandroid.api.models.threedsv2.ThreeDsV2Params
 import com.emerchantpay.gateway.genesisandroid.api.models.threedsv2.ThreeDsV2RecurringParams
 import com.emerchantpay.gateway.genesisandroid.api.util.Configuration
+import java.lang.NumberFormatException
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TransactionDetailsActivity : Activity() {
-
     // Alert dialog
     private var dialogHandler: AlertDialogHandler? = null
 
@@ -45,28 +46,8 @@ class TransactionDetailsActivity : Activity() {
 
         setContentView(R.layout.activity_transaction_details)
 
-        // Load params to UI
-        transactionDetails.setUIParams(this)
-
         try {
-            // Load currencies and countries
-            val currencyObject = Currency()
-            val countryObject = Country()
-
-            val currenciesAdapter = ArrayAdapter(this,
-                    android.R.layout.simple_spinner_item, currencyObject.currencies)
-            currenciesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            val countriesAdapter = ArrayAdapter(this,
-                    android.R.layout.simple_spinner_item, countryObject.countryNames)
-            countriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            // Adapters Hash map
-            val adapters = HashMap<String, ArrayAdapter<String>>()
-            adapters["currency"] = currenciesAdapter
-            adapters["country"] = countriesAdapter
-
-            // Add spinners
-            transactionDetails.addSpinners(this, adapters)
+            transactionDetails.setFieldsValues(this)
 
         } catch (e: IllegalAccessException) {
             Log.e("Illegal Exception", e.toString())
@@ -82,40 +63,105 @@ class TransactionDetailsActivity : Activity() {
     @Throws(IllegalAccessException::class)
     fun loadPaymentView(view: View) {
         // Get param values from UI
-        transactionDetails.getUIParams()
+        transactionDetails.getFieldsValues()
+
+        val username = intent?.extras?.get(Extras.EXTRA_USERNAME).toString()
+        val password = intent?.extras?.get(Extras.EXTRA_PASSWORD).toString()
+        val environment =
+            (intent.extras?.get(Extras.EXTRA_ENVIRONMENT) ?: Environments.STAGING).toString()
+        val endpoint =
+            (intent.extras?.get(Extras.EXTRA_ENDPOINT) ?: Endpoints.EMERCHANTPAY).toString()
+        val language = (intent.extras?.get(Extras.EXTRA_LANGUAGE) ?: Locales.EN).toString()
 
         // Create configuration
-        val configuration = Configuration("SET_YOUR_USERNAME",
-                "SET_YOUR_PASSWORD",
-                Environments.STAGING, Endpoints.EMERCHANTPAY,
-                Locales.EN)
+        val configuration = Configuration(
+            username, password, Environments(environment),
+            Endpoints(endpoint), Locale(language)
+        )
 
         configuration.setDebugMode(true)
 
         // Create Billing PaymentAddress
-        val billingAddress = PaymentAddress(transactionDetails.firstname!!,
-                transactionDetails.lastname!!, transactionDetails.address1!!, transactionDetails.address2!!,
-                transactionDetails.zipCode!!, transactionDetails.city!!, transactionDetails.state!!,
-                Country().getCountry(transactionDetails.country!!)!!)
+        val billingAddress = PaymentAddress(
+            transactionDetails.firstname!!,
+            transactionDetails.lastname!!,
+            transactionDetails.address1!!,
+            transactionDetails.address2!!,
+            transactionDetails.zipCode!!,
+            transactionDetails.city!!,
+            transactionDetails.state!!,
+            Country().getCountry(transactionDetails.country!!)!!
+        )
 
         // Create Transaction types
         val transactionTypes = TransactionTypesRequest()
         transactionDetails.transactionType?.let { transactionTypes.addTransaction(it) }
 
         // Dynamic descriptor params
-        val dynamicDescriptorParams = DynamicDescriptorParams("eMerchantPay Ltd",
-                "Sofia")
+        val dynamicDescriptorParams = DynamicDescriptorParams(
+            "eMerchantPay Ltd",
+            "Sofia"
+        )
 
         // Init WPF API request
         val paymentRequest = transactionDetails.currency?.let {
             Currency().findCurrencyByName(it)?.let { it ->
-                PaymentRequest(this,
-                        transactionDetails.transactionId, BigDecimal(transactionDetails.amount),
-                        it,
-                        transactionDetails.customerEmail, transactionDetails.customerPhone,
-                        billingAddress, transactionDetails.notificationUrl, transactionTypes)
+                PaymentRequest(
+                    this,
+                    transactionDetails.transactionId, BigDecimal(transactionDetails.amount),
+                    it,
+                    transactionDetails.customerEmail, transactionDetails.customerPhone,
+                    billingAddress, transactionDetails.notificationUrl, transactionTypes
+                )
             }
         }
+
+        // Recurring API request
+        if (isRecurringTransaction(transactionTypes.transactionTypesList))
+            transactionDetails.recurringMode?.let { transactionTypes.setMode(it) }
+            transactionDetails.recurringPaymentType?.let { transactionTypes.setPaymentType(it) }
+            transactionDetails.recurringAmountType?.let { transactionTypes.setAmountType(it) }
+            transactionDetails.recurringInterval?.let { transactionTypes.setInterval(it) }
+            transactionDetails.recurringFirstDate?.let {
+                try {
+                    transactionTypes.setFirstDate(SimpleDateFormat(DATE_FORMAT).parse(it))
+                } catch (e: Exception) {
+                    Log.e("Parse exception", e.toString())
+                }
+            }
+            transactionDetails.recurringFrequency?.let { transactionTypes.setFrequency(it) }
+            transactionDetails.recurringReferenceNumber?.let {
+                try {
+                    transactionTypes.setRegistrationReferenceNumber(
+                        it.toInt()
+                    )
+                } catch (e: NumberFormatException) {
+                    Log.e(NUMBER_FORMAT_EXCEPTION_TAG, e.toString())
+                }
+            }
+
+            transactionDetails.recurringMaxCount?.let {
+                try {
+                    transactionTypes.setMaxCount(
+                        it.toInt()
+                    )
+                } catch (e: NumberFormatException) {
+                    Log.e(NUMBER_FORMAT_EXCEPTION_TAG, e.toString())
+                }
+            }
+
+            transactionDetails.recurringMaxAmount?.let {
+                try {
+                    transactionTypes.setMaxAmount(
+                        it.toInt()
+                    )
+                } catch (e: NumberFormatException) {
+                    Log.e(NUMBER_FORMAT_EXCEPTION_TAG, e.toString())
+                }
+            }
+            transactionDetails.recurringType?.let { paymentRequest?.setRecurringType(it) }
+            transactionDetails.recurringCategory?.let { paymentRequest?.setRecurringCategory(it) }
+            transactionDetails.recurringValidated?.let { transactionTypes.setValidated(it) }
 
         // Additional params
         transactionDetails.usage?.let { paymentRequest?.setUsage(it) }
@@ -168,6 +214,9 @@ class TransactionDetailsActivity : Activity() {
 
         paymentRequest?.setThreeDsV2Params(threeDsV2Params)
 
+        // Google Pay
+        paymentRequest?.setGooglePayPaymentSubtype(transactionDetails.googlePayPaymentSubtype)
+
         val genesis = paymentRequest?.let { Genesis(this, configuration, it) }
 
         when {
@@ -176,12 +225,12 @@ class TransactionDetailsActivity : Activity() {
                         ErrorMessages.CONNECTION_ERROR)
                 dialogHandler!!.show()
             }
-            genesis.isConnected(this)!! && genesis?.isValidData!! -> {
+            genesis.isConnected(this)!! && genesis.isValidData!! -> {
                 //Execute WPF API request
                 genesis.push()
 
                 // Get response
-                val response = genesis?.response
+                val response = genesis.response
 
                 // Check if response isSuccess
                 when {
@@ -196,7 +245,7 @@ class TransactionDetailsActivity : Activity() {
                     }
                 }
             }
-            !genesis?.isValidData!! -> {
+            !genesis.isValidData!! -> {
                 // Get Error Handler
                 error = genesis.error
 
@@ -235,5 +284,17 @@ class TransactionDetailsActivity : Activity() {
                 }
             }
         }
+    }
+
+    private fun isRecurringTransaction(transactionTypesList: List<String>): Boolean {
+        return transactionTypesList.contains(WPFTransactionTypes.AUTHORIZE.value)
+            || transactionTypesList.contains(WPFTransactionTypes.AUTHORIZE3D.value)
+            || transactionTypesList.contains(WPFTransactionTypes.SALE.value)
+            || transactionTypesList.contains(WPFTransactionTypes.SALE3D.value)
+    }
+
+    companion object {
+        private const val DATE_FORMAT = "yyyy-MM-dd"
+        private const val NUMBER_FORMAT_EXCEPTION_TAG = "Number Format exception"
     }
 }

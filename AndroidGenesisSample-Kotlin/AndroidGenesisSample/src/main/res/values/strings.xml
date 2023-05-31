@@ -5,6 +5,8 @@
     <!-- MainActivity label resources -->
     <string name="demo_label">Genesis Inn-app payments Demo</string>
     <string name="select_transaction_label">Please select transaction type:</string>
+    <string name="username_hint">YOUR_USERNAME</string>
+    <string name="password_hint">YOUR_PASSWORD</string>
 
     <!--TransactionDetailsActivity label resources -->
     <string name="transactionid_label">Transaction Id</string>
@@ -25,6 +27,20 @@
     <string name="pay_label">Pay</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_transaction_details">TransactionDetailsActivity</string>
+    <string name="recurring_reference_type_hint">Registration Reference number</string>
+    <string name="recurring_max_count_hint">Recurring Max. count</string>
+    <string name="recurring_max_amount_hint">Recurring Max. amount</string>
+    <string name="recurring_first_date_hint">Recurring First date</string>
+    <string name="recurring_time_of_day_hint">Recurring Time of Day</string>
+    <string name="recurring_period_hint">Recurring Period</string>
+    <string name="recurring_mode_hint">Recurring Mode</string>
+    <string name="recurring_payment_type_hint">Recurring Payment type</string>
+    <string name="recurring_amount_type_hint">Recurring Amount type</string>
+    <string name="recurring_interval_hint">Recurring Interval</string>
+    <string name="recurring_frequency_hint">Recurring Frequency</string>
+    <string name="recurring_type_hint">Recurring Type</string>
+    <string name="recurring_category_hint">Recurring Category</string>
+    <string name="recurring_validated_hint">Recurring validated</string>
 
     <!-- Urls -->
     <string name="privacy_policy_url">https://www.genesissupport247.com/privacy-policy/</string>
@@ -34,6 +50,9 @@
     <string name="privacy_policy_hyperlink"><a href="https://www.genesissupport247.com/privacy-policy/">Privacy Policy</a></string>
     <string name="terms_and_conditions_hyperlink"><a href="https://www.genesissupport247.com/terms-conditions">Terms &amp; Conditions</a></string>
     <string name="messageWithLink">This is a message with a link inside!\n<a href="https://www.google.com/">Tap here to open it!</a></string>
+    <string name="username_is_required">Username is required.</string>
+    <string name="password_is_required">Password is required.</string>
+    <string name="please_select_environment_endpoint_and_language">Please select Environment, Endpoint and Language.</string>
 
     <!-- WPF Transaction types -->
     <string-array name="transaction_types">

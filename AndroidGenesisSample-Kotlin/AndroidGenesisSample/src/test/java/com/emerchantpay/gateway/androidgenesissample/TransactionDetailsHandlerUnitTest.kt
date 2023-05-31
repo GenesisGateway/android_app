@@ -59,8 +59,8 @@ class TransactionDetailsHandlerUnitTest {
                 "https://example.com", transactionTypes)
 
 
-        transactionDetails!!.setUIParams(transactionDetailsActivity!!)
-        transactionDetails!!.getUIParams()
+        transactionDetails!!.setFieldsValues(transactionDetailsActivity!!)
+        transactionDetails!!.getFieldsValues()
     }
 
     @Test
